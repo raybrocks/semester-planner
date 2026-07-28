@@ -66,6 +66,49 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.header-titles {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-left: 2px solid rgba(255, 255, 255, 0.1);
+  padding-left: 1.5rem;
+}
+
+.status-dropdown {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--panel-border);
+  color: var(--text-primary);
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  appearance: none; /* Fjern standard pil i noen nettlesere for renere utseende */
+}
+
+.status-dropdown:focus, .status-dropdown:hover {
+  border-color: var(--accent-color);
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .actions button {
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
@@ -80,7 +123,6 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-left: 1rem;
 }
 
 .actions button:hover {
@@ -106,13 +148,46 @@ body {
 }
 
 .matrix-header-cell {
-  padding: 1rem;
   font-weight: 600;
   text-align: center;
   border-bottom: 1px solid var(--panel-border);
   border-right: 1px solid var(--panel-border);
   background: rgba(15, 23, 42, 0.4);
   color: var(--text-secondary);
+}
+
+.day-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-name {
+  padding: 1rem;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.room-headers {
+  display: flex;
+  width: 100%;
+  flex: 1;
+}
+
+.room-header-label {
+  flex: 1;
+  font-size: 0.65rem;
+  padding: 4px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  background: rgba(15, 23, 42, 0.3);
+  border-right: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.room-header-label:last-child {
+  border-right: none;
 }
 
 .matrix-time-cell {
@@ -129,12 +204,13 @@ body {
   position: sticky;
   left: 0;
   z-index: 20;
+  height: 120px;
 }
 
 .sticky-col {
   position: sticky;
   left: 0;
-  z-index: 30; /* Higher z-index for the top-left corner so it stays above the time cells if needed, though they don't overlap */
+  z-index: 30;
   background: #1e293b;
 }
 
@@ -143,7 +219,7 @@ body {
   flex-direction: row;
   border-bottom: 1px solid var(--panel-border);
   border-right: 1px solid var(--panel-border);
-  min-height: 180px;
+  height: 120px;
 }
 
 .room-container {
@@ -160,23 +236,11 @@ body {
   border-right: none;
 }
 
-.room-label {
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-  padding: 4px 8px;
-  background: rgba(15, 23, 42, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
+/* Removed old room-label */
 
 .matrix-slot {
   flex: 1;
-  min-height: 80px;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  position: relative;
   transition: background-color 0.2s ease;
   cursor: pointer;
 }
@@ -191,7 +255,9 @@ body {
 
 /* Class Card */
 .class-card {
-  flex: 1;
+  position: absolute;
+  left: 4px;
+  right: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -200,12 +266,12 @@ body {
   background: rgba(30, 41, 59, 0.9);
   border: 1px solid var(--panel-border);
   border-radius: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.25rem;
   cursor: grab;
-  position: relative;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   z-index: 10;
+  overflow: hidden;
 }
 
 .class-card.kids {
@@ -432,4 +498,46 @@ body {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-titles {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .header h2 {
+    border-left: none;
+    padding-left: 0;
+    font-size: 1.1rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .actions button,
+  .actions label.btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
 }

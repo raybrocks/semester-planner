@@ -7,15 +7,11 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
+  useDroppable,
+  useDraggable
 } from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-  useSortable
-} from '@dnd-kit/sortable';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useDroppable } from '@dnd-kit/core';
 import { v4 as uuidv4 } from 'uuid';
 import { Download, Upload, Trash2, Edit2 } from 'lucide-react';
 import { db } from './firebase';
@@ -50,21 +46,25 @@ function DraggableCard({ item, onEdit, onDelete }) {
     listeners,
     setNodeRef,
     transform,
-    transition,
     isDragging
-  } = useSortable({ id: item.id, data: item });
+  } = useDraggable({ id: item.id, data: item });
 
   const durationStr = item.duration ? String(item.duration) : "60";
   const durationNum = parseInt(durationStr, 10);
-  const heightPercent = (durationNum / 60) * 100;
+  
+  const timeStr = item.time || "17:00";
+  const [hour, minute] = timeStr.split(':');
+  const offsetMinutes = parseInt(minute || "0", 10);
+
+  const HOUR_HEIGHT = 120; // Must match the CSS height of .cell-container / .matrix-time-cell
+  const heightPixels = (durationNum / 60) * HOUR_HEIGHT;
+  const topPixels = (offsetMinutes / 60) * HOUR_HEIGHT;
 
   const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    flex: 'none',
-    height: `${heightPercent}%`,
-    minHeight: '60px',
-    overflow: 'hidden'
+    transform: CSS.Translate.toString(transform),
+    height: `${heightPixels}px`,
+    top: `${topPixels}px`,
+    zIndex: isDragging ? 100 : 10
   };
 
   return (
@@ -106,7 +106,8 @@ function EditModal({ isOpen, onClose, onSave, initialData, slotId }) {
       setFormData({ ...initialData, duration: initialData.duration || '60' });
     } else {
       const defaultRoom = slotId ? slotId.split('-')[2] : 'Sal 1';
-      setFormData({ className: '', teacher: '', category: 'Voksen', room: defaultRoom, duration: '60' });
+      const defaultTime = slotId ? slotId.split('-')[1] : '17:00';
+      setFormData({ className: '', teacher: '', category: 'Voksen', room: defaultRoom, duration: '60', time: defaultTime });
     }
   }, [initialData, isOpen, slotId]);
 
@@ -117,8 +118,7 @@ function EditModal({ isOpen, onClose, onSave, initialData, slotId }) {
     onSave({
       ...formData,
       id: initialData?.id || uuidv4(),
-      day: slotId ? slotId.split('-')[0] : initialData?.day || 'Mandag',
-      time: slotId ? slotId.split('-')[1] : initialData?.time || '17:00',
+      day: initialData?.day || (slotId ? slotId.split('-')[0] : 'Mandag'),
     });
     onClose();
   };
@@ -128,6 +128,16 @@ function EditModal({ isOpen, onClose, onSave, initialData, slotId }) {
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h2 className="modal-title">{initialData ? 'Rediger Klasse' : 'Ny Klasse'}</h2>
         <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Starttid</label>
+            <input 
+              type="time" 
+              className="form-input" 
+              value={formData.time || '17:00'} 
+              onChange={e => setFormData({...formData, time: e.target.value})}
+              required
+            />
+          </div>
           <div className="form-group">
             <label>Danseklasse</label>
             <input 
@@ -277,7 +287,12 @@ const initialData = [
 export default function App() {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState(null);
+  const [status, setStatus] = useState(() => localStorage.getItem("planStatus") || "In progress");
   
+  useEffect(() => {
+    localStorage.setItem("planStatus", status);
+  }, [status]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [targetSlot, setTargetSlot] = useState(null);
@@ -368,10 +383,14 @@ export default function App() {
         const newRoom = parts.slice(2).join('-');
         
         if (DAYS.includes(newDay) && TIMES.includes(newTime) && ROOMS.includes(newRoom)) {
+          const oldMinutes = (activeItem.time || '17:00').split(':')[1] || '00';
+          const newHour = newTime.split(':')[0];
+          const updatedTime = `${newHour}:${oldMinutes}`;
+
           const updatedItem = { 
-            ...items.find(i => i.id === active.id), 
+            ...activeItem, 
             day: newDay, 
-            time: newTime, 
+            time: updatedTime, 
             room: newRoom 
           };
           setDoc(doc(db, "classes", updatedItem.id), updatedItem);
@@ -442,7 +461,14 @@ export default function App() {
   return (
     <div className="app-container">
       <header className="header">
-        <h1>Timeplan Høsten 2026</h1>
+        <div className="header-titles">
+          <h1>Semesterplanlegger</h1>
+          <h2>Høst 2026</h2>
+          <select className="status-dropdown" value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value="In progress">In progress</option>
+            <option value="Finished">Finished</option>
+          </select>
+        </div>
         <div className="actions">
           <button onClick={forceMigrate} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#eab308', color: '#000', border: 'none', fontWeight: 'bold' }}>
             <Upload size={16} /> Gjenopprett fra lokalt
@@ -465,9 +491,16 @@ export default function App() {
       >
         <div className="matrix-container">
           <div className="matrix">
-            <div className="matrix-header-cell sticky-col">Tid \ Dag</div>
+            <div className="matrix-header-cell sticky-col" style={{ padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Tid \ Dag</div>
             {DAYS.map(day => (
-              <div key={day} className="matrix-header-cell">{day}</div>
+              <div key={day} className="matrix-header-cell day-col">
+                <div className="day-name">{day}</div>
+                <div className="room-headers">
+                  {ROOMS.map(room => (
+                    <div key={room} className="room-header-label">{room}</div>
+                  ))}
+                </div>
+              </div>
             ))}
 
             {TIMES.map(time => (
@@ -480,26 +513,24 @@ export default function App() {
                     <div key={`${day}-${time}`} className="cell-container">
                       {ROOMS.map(room => {
                         const slotId = `${day}-${time}-${room}`;
-                        const slotItems = items.filter(item => item.day === day && item.time === time && item.room === room);
+                        const slotHour = time.split(':')[0];
+                        const slotItems = items.filter(item => {
+                          if (item.day !== day || item.room !== room) return false;
+                          const itemHour = (item.time || '17:00').split(':')[0];
+                          return itemHour === slotHour;
+                        });
                         
                         return (
                           <div key={slotId} className="room-container">
-                            <div className="room-label">{room}</div>
                             <DroppableSlot id={slotId} onClick={() => handleSlotClick(slotId)}>
-                              <SortableContext 
-                                id={slotId}
-                                items={slotItems.map(i => i.id)}
-                                strategy={verticalListSortingStrategy}
-                              >
-                                {slotItems.map(item => (
-                                  <DraggableCard 
-                                    key={item.id} 
-                                    item={item} 
-                                    onEdit={handleEdit}
-                                    onDelete={handleDelete}
-                                  />
-                                ))}
-                              </SortableContext>
+                              {slotItems.map(item => (
+                                <DraggableCard 
+                                  key={item.id} 
+                                  item={item} 
+                                  onEdit={handleEdit}
+                                  onDelete={handleDelete}
+                                />
+                              ))}
                             </DroppableSlot>
                           </div>
                         );
