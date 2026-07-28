@@ -1,0 +1,6 @@
+{
+  "firestore": {
+    "database": "semester-planner-db",
+    "rules": "firestore.rules"
+  }
+}
