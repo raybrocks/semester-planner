@@ -143,8 +143,8 @@ body {
 
 .matrix {
   display: grid;
-  grid-template-columns: 80px repeat(7, minmax(350px, 1fr));
-  min-width: 2530px;
+  grid-template-columns: 80px repeat(4, minmax(350px, 1fr));
+  min-width: 1480px;
 }
 
 .matrix-header-cell {

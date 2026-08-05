@@ -18,7 +18,7 @@ import { db } from './firebase';
 import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import './App.css';
 
-const DAYS = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
+const DAYS = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag'];
 const TIMES = ['17:00', '18:00', '19:00', '20:00'];
 const ROOMS = ['Sal 1', 'Sal 2'];
 
