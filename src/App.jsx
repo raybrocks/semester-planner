@@ -13,7 +13,7 @@ import {
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { v4 as uuidv4 } from 'uuid';
-import { Download, Upload, Trash2, Edit2 } from 'lucide-react';
+import { Download, Upload, Trash2, Edit2, Trash } from 'lucide-react';
 import { db } from './firebase';
 import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import './App.css';
@@ -67,16 +67,20 @@ function DraggableCard({ item, onEdit, onDelete }) {
     zIndex: isDragging ? 100 : 10
   };
 
+  const categoryClass = (item.category || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`class-card ${item.category.toLowerCase()} ${isDragging ? 'is-dragging' : ''}`}
+      className={`class-card ${categoryClass} ${isDragging ? 'is-dragging' : ''}`}
       {...attributes}
       {...listeners}
     >
       <div className="card-header">
         <span className="class-name">{item.className}</span>
+        {item.level && <span className="level-tag">{item.level}</span>}
+        {item.kompani && <span className="kompani-tag">KREVER AUDITION</span>}
         <div className="card-actions">
           <button className="edit-btn" onClick={(e) => { e.stopPropagation(); onEdit(item); }}>
             <Edit2 size={14} />
@@ -95,19 +99,22 @@ function DraggableCard({ item, onEdit, onDelete }) {
 function EditModal({ isOpen, onClose, onSave, initialData, slotId }) {
   const [formData, setFormData] = useState({
     className: '',
+    level: '',
+    kompani: false,
     teacher: '',
-    category: 'Voksen',
+    category: 'Ungd/Voksen',
     room: 'Sal 1',
-    duration: '60'
+    duration: '60',
+    time: '17:00'
   });
 
   useEffect(() => {
     if (initialData) {
-      setFormData({ ...initialData, duration: initialData.duration || '60' });
+      setFormData({ ...initialData, duration: initialData.duration || '60', level: initialData.level || '', kompani: initialData.kompani || false });
     } else {
       const defaultRoom = slotId ? slotId.split('-')[2] : 'Sal 1';
       const defaultTime = slotId ? slotId.split('-')[1] : '17:00';
-      setFormData({ className: '', teacher: '', category: 'Voksen', room: defaultRoom, duration: '60', time: defaultTime });
+      setFormData({ className: '', level: '', kompani: false, teacher: '', category: 'Ungd/Voksen', room: defaultRoom, duration: '60', time: defaultTime });
     }
   }, [initialData, isOpen, slotId]);
 
@@ -145,9 +152,29 @@ function EditModal({ isOpen, onClose, onSave, initialData, slotId }) {
               className="form-input" 
               value={formData.className} 
               onChange={e => setFormData({...formData, className: e.target.value.toUpperCase()})}
-              placeholder="F.EKS. HIPHOP NYBEGYNNER"
+              placeholder="F.EKS. HIP HOP"
               required
             />
+          </div>
+          <div className="form-group">
+            <label>Nivå (Valgfritt)</label>
+            <input 
+              className="form-input" 
+              value={formData.level} 
+              onChange={e => setFormData({...formData, level: e.target.value.toUpperCase()})}
+              placeholder="F.EKS. NIVÅ 1"
+            />
+          </div>
+          <div className="form-group checkbox-group">
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 500, marginTop: '0.5rem' }}>
+              <input 
+                type="checkbox"
+                style={{ width: '1.2rem', height: '1.2rem', cursor: 'pointer' }}
+                checked={formData.kompani} 
+                onChange={e => setFormData({...formData, kompani: e.target.checked})}
+              />
+              Kompani (Krever audition)
+            </label>
           </div>
           <div className="form-group">
             <label>Pedagog</label>
@@ -162,6 +189,24 @@ function EditModal({ isOpen, onClose, onSave, initialData, slotId }) {
           <div className="form-group">
             <label>Kategori</label>
             <div className="radio-group">
+              <label className="radio-label">
+                <input 
+                  type="radio" 
+                  name="category" 
+                  value="Ungdom" 
+                  checked={formData.category === 'Ungdom'}
+                  onChange={e => setFormData({...formData, category: e.target.value})}
+                /> Ungdom
+              </label>
+              <label className="radio-label">
+                <input 
+                  type="radio" 
+                  name="category" 
+                  value="Ungd/Voksen" 
+                  checked={formData.category === 'Ungd/Voksen'}
+                  onChange={e => setFormData({...formData, category: e.target.value})}
+                /> Ungd/Voksen
+              </label>
               <label className="radio-label">
                 <input 
                   type="radio" 
@@ -259,29 +304,29 @@ function EditModal({ isOpen, onClose, onSave, initialData, slotId }) {
 }
 
 const initialData = [
-  { id: "1", day: "Mandag", time: "17:00", room: "Sal 1", className: "K-POP 4-7 TRINN", teacher: "", category: "Kids" },
-  { id: "2", day: "Mandag", time: "18:00", room: "Sal 1", className: "HIP HOP 5-7 TRINN NIVÅ 1", teacher: "TBA", category: "Kids" },
-  { id: "3", day: "Mandag", time: "19:00", room: "Sal 1", className: "HIP HOP ENERGY MIX NIVÅ 2", teacher: "MARIE", category: "Voksen" },
-  { id: "4", day: "Mandag", time: "20:00", room: "Sal 1", className: "FRITRENING OPEN SESSION", teacher: "", category: "Egentrening" },
-  { id: "5", day: "Mandag", time: "20:00", room: "Sal 1", className: "HIP HOP UNGDOM/VOKSNE", teacher: "MARIE", category: "Egentrening" },
-  { id: "6", day: "Mandag", time: "17:00", room: "Sal 2", className: "HIP HOP 1-2 TRINN", teacher: "MALIN DALE", category: "Kids" },
-  { id: "7", day: "Mandag", time: "19:00", room: "Sal 2", className: "HIP HOP VOKSEN 30+ NIVÅ 1", teacher: "KAJA", category: "Voksen" },
-  { id: "8", day: "Tirsdag", time: "17:00", room: "Sal 1", className: "KIDS 3-5 ÅR KNØTTEDANS", teacher: "INGER MARIT", category: "Kids" },
-  { id: "9", day: "Tirsdag", time: "18:00", room: "Sal 1", className: "COMMERCIAL GIRLY NIVÅ 2 UNGDOM/VOKSNE", teacher: "LINN", category: "Voksen" },
-  { id: "10", day: "Tirsdag", time: "19:00", room: "Sal 1", className: "HEELS NIVÅ 1 16+", teacher: "LINN", category: "Voksen" },
-  { id: "11", day: "Tirsdag", time: "17:00", room: "Sal 2", className: "KIDS AKROBATIKK NIVÅ 1", teacher: "HILDE MARIA", category: "Kids" },
-  { id: "12", day: "Tirsdag", time: "18:00", room: "Sal 2", className: "KIDS AKROBATIKK NIVÅ 2", teacher: "HILDE MARIA", category: "Kids" },
-  { id: "13", day: "Onsdag", time: "17:00", room: "Sal 1", className: "KIDS BREAK", teacher: "TONY", category: "Kids" },
-  { id: "14", day: "Onsdag", time: "18:00", room: "Sal 1", className: "HIP HOP COMMERCIAL 13-18 ÅR NIVÅ 1", teacher: "TBA", category: "Voksen" },
-  { id: "15", day: "Onsdag", time: "19:00", room: "Sal 1", className: "MODERNE / CONTEMPORARY UNGDOM / VOKSEN", teacher: "TBA", category: "Voksen" },
-  { id: "16", day: "Onsdag", time: "20:00", room: "Sal 1", className: "FRITRENING OPEN SESSION MODERNE", teacher: "", category: "Egentrening" },
-  { id: "17", day: "Onsdag", time: "17:00", room: "Sal 2", className: "K-POP UNGDOM/VOKSEN", teacher: "", category: "Voksen" },
-  { id: "18", day: "Onsdag", time: "18:00", room: "Sal 2", className: "JAZZ- OG MODERNE MIX 5-7 TRINN", teacher: "TBA", category: "Kids" },
-  { id: "19", day: "Torsdag", time: "17:00", room: "Sal 1", className: "HIP HOP 5-7 TRINN NIVÅ 2", teacher: "SARA", category: "Kids" },
-  { id: "20", day: "Torsdag", time: "18:00", room: "Sal 1", className: "LATIN CHOREO UNGDOM/VOKSEN", teacher: "LINN", category: "Voksen" },
-  { id: "21", day: "Torsdag", time: "19:00", room: "Sal 1", className: "HIP HOP DRILLS UNGDOM / VOKSEN", teacher: "MARIE", category: "Voksen" },
-  { id: "22", day: "Torsdag", time: "20:00", room: "Sal 1", className: "KONKURRANSETRENING (LUKKET)", teacher: "", category: "Voksen" },
-  { id: "23", day: "Torsdag", time: "18:00", room: "Sal 2", className: "KIDS 3-4 TRINN", teacher: "SARA", category: "Kids" }
+  { id: "1", day: "Mandag", time: "17:00", room: "Sal 1", className: "K-POP 4-7 TRINN", level: "", teacher: "", category: "Kids" },
+  { id: "2", day: "Mandag", time: "18:00", room: "Sal 1", className: "HIP HOP 5-7 TRINN", level: "NIVÅ 1", teacher: "TBA", category: "Kids" },
+  { id: "3", day: "Mandag", time: "19:00", room: "Sal 1", className: "HIP HOP ENERGY MIX", level: "NIVÅ 2", teacher: "MARIE", category: "Ungd/Voksen" },
+  { id: "4", day: "Mandag", time: "20:00", room: "Sal 1", className: "FRITRENING OPEN SESSION", level: "", teacher: "", category: "Egentrening" },
+  { id: "5", day: "Mandag", time: "20:00", room: "Sal 1", className: "HIP HOP UNGDOM/VOKSNE", level: "", teacher: "MARIE", category: "Egentrening" },
+  { id: "6", day: "Mandag", time: "17:00", room: "Sal 2", className: "HIP HOP 1-2 TRINN", level: "", teacher: "MALIN DALE", category: "Kids" },
+  { id: "7", day: "Mandag", time: "19:00", room: "Sal 2", className: "HIP HOP VOKSEN 30+", level: "NIVÅ 1", teacher: "KAJA", category: "Voksen" },
+  { id: "8", day: "Tirsdag", time: "17:00", room: "Sal 1", className: "KIDS 3-5 ÅR KNØTTEDANS", level: "", teacher: "INGER MARIT", category: "Kids" },
+  { id: "9", day: "Tirsdag", time: "18:00", room: "Sal 1", className: "COMMERCIAL GIRLY UNGDOM/VOKSNE", level: "NIVÅ 2", teacher: "LINN", category: "Ungd/Voksen" },
+  { id: "10", day: "Tirsdag", time: "19:00", room: "Sal 1", className: "HEELS 16+", level: "NIVÅ 1", teacher: "LINN", category: "Voksen" },
+  { id: "11", day: "Tirsdag", time: "17:00", room: "Sal 2", className: "KIDS AKROBATIKK", level: "NIVÅ 1", teacher: "HILDE MARIA", category: "Kids" },
+  { id: "12", day: "Tirsdag", time: "18:00", room: "Sal 2", className: "KIDS AKROBATIKK", level: "NIVÅ 2", teacher: "HILDE MARIA", category: "Kids" },
+  { id: "13", day: "Onsdag", time: "17:00", room: "Sal 1", className: "KIDS BREAK", level: "", teacher: "TONY", category: "Kids" },
+  { id: "14", day: "Onsdag", time: "18:00", room: "Sal 1", className: "HIP HOP COMMERCIAL 13-18 ÅR", level: "NIVÅ 1", teacher: "TBA", category: "Ungdom" },
+  { id: "15", day: "Onsdag", time: "19:00", room: "Sal 1", className: "MODERNE / CONTEMPORARY UNGDOM / VOKSEN", level: "", teacher: "TBA", category: "Ungd/Voksen" },
+  { id: "16", day: "Onsdag", time: "20:00", room: "Sal 1", className: "FRITRENING OPEN SESSION MODERNE", level: "", teacher: "", category: "Egentrening" },
+  { id: "17", day: "Onsdag", time: "17:00", room: "Sal 2", className: "K-POP UNGDOM/VOKSEN", level: "", teacher: "", category: "Ungd/Voksen" },
+  { id: "18", day: "Onsdag", time: "18:00", room: "Sal 2", className: "JAZZ- OG MODERNE MIX 5-7 TRINN", level: "", teacher: "TBA", category: "Kids" },
+  { id: "19", day: "Torsdag", time: "17:00", room: "Sal 1", className: "HIP HOP 5-7 TRINN", level: "NIVÅ 2", teacher: "SARA", category: "Kids" },
+  { id: "20", day: "Torsdag", time: "18:00", room: "Sal 1", className: "LATIN CHOREO UNGDOM/VOKSEN", level: "", teacher: "LINN", category: "Ungd/Voksen" },
+  { id: "21", day: "Torsdag", time: "19:00", room: "Sal 1", className: "HIP HOP DRILLS UNGDOM / VOKSEN", level: "", teacher: "MARIE", category: "Ungd/Voksen" },
+  { id: "22", day: "Torsdag", time: "20:00", room: "Sal 1", className: "KONKURRANSETRENING (LUKKET)", level: "", teacher: "", category: "Ungd/Voksen" },
+  { id: "23", day: "Torsdag", time: "18:00", room: "Sal 2", className: "KIDS 3-4 TRINN", level: "", teacher: "SARA", category: "Kids" }
 ];
 
 export default function App() {
@@ -296,6 +341,8 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [targetSlot, setTargetSlot] = useState(null);
+
+
 
   const forceMigrate = () => {
     const saved = localStorage.getItem('timeplanDataV3');
@@ -473,10 +520,8 @@ export default function App() {
           <button onClick={forceMigrate} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#eab308', color: '#000', border: 'none', fontWeight: 'bold' }}>
             <Upload size={16} /> Gjenopprett fra lokalt
           </button>
-          <label className="btn-secondary" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Upload size={16} /> Last inn
-            <input type="file" style={{ display: 'none' }} accept=".json" onChange={handleImport} />
-          </label>
+
+
           <button onClick={handleExport} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
             <Download size={16} /> Eksporter
           </button>

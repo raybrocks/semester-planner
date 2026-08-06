@@ -10,6 +10,8 @@
   --accent-hover: #2563eb;
   --card-kids: rgba(251, 207, 232, 0.3);
   --card-kids-border: rgba(251, 207, 232, 0.6);
+  --card-ungdom: rgba(196, 181, 253, 0.3);
+  --card-ungdom-border: rgba(196, 181, 253, 0.6);
   --card-voksen: rgba(186, 230, 253, 0.3);
   --card-voksen-border: rgba(186, 230, 253, 0.6);
   --card-egentrening: rgba(167, 243, 208, 0.3);
@@ -279,9 +281,14 @@ body {
   border-color: var(--card-kids-border);
 }
 
-.class-card.voksen {
+.class-card.voksen, .class-card.ungd-voksen {
   background: var(--card-voksen);
   border-color: var(--card-voksen-border);
+}
+
+.class-card.ungdom {
+  background: var(--card-ungdom);
+  border-color: var(--card-ungdom-border);
 }
 
 .class-card.egentrening {
@@ -303,10 +310,35 @@ body {
 }
 
 .class-name {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.75rem;
   word-break: break-word;
   text-transform: uppercase;
+  margin-bottom: 0.1rem;
+}
+
+.level-tag {
+  display: block;
+  font-size: 0.6rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+.kompani-tag {
+  display: inline-block;
+  font-size: 0.55rem;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  margin-top: 0.2rem;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .edit-btn,
@@ -370,9 +402,14 @@ body {
   color: #fbcfe8;
 }
 
-.voksen .category-tag {
-  background: rgba(186, 230, 253, 0.2);
-  color: #bae6fd;
+.voksen .category-tag, .ungd-voksen .category-tag {
+  background: rgba(186, 230, 253, 0.4);
+  color: #0284c7;
+}
+
+.ungdom .category-tag {
+  background: rgba(196, 181, 253, 0.4);
+  color: #6d28d9;
 }
 
 .egentrening .category-tag {
