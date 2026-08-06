@@ -40,14 +40,14 @@ function DroppableSlot({ id, children, onClick }) {
   );
 }
 
-function DraggableCard({ item, onEdit, onDelete }) {
+function DraggableCard({ item, onEdit, onDelete, disabled }) {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     isDragging
-  } = useDraggable({ id: item.id, data: item });
+  } = useDraggable({ id: item.id, data: item, disabled });
 
   const durationStr = item.duration ? String(item.duration) : "60";
   const durationNum = parseInt(durationStr, 10);
@@ -81,14 +81,16 @@ function DraggableCard({ item, onEdit, onDelete }) {
         <span className="class-name">{item.className}</span>
         {item.level && <span className="level-tag">{item.level}</span>}
         {item.kompani && <span className="kompani-tag">KREVER AUDITION</span>}
-        <div className="card-actions">
-          <button className="edit-btn" onClick={(e) => { e.stopPropagation(); onEdit(item); }}>
-            <Edit2 size={14} />
-          </button>
-          <button className="delete-btn" onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}>
-            <Trash2 size={14} />
-          </button>
-        </div>
+        {!disabled && (
+          <div className="card-actions">
+            <button className="edit-btn" onClick={(e) => { e.stopPropagation(); onEdit(item); }}>
+              <Edit2 size={14} />
+            </button>
+            <button className="delete-btn" onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}>
+              <Trash2 size={14} />
+            </button>
+          </div>
+        )}
       </div>
       <div className="teacher-name">{item.teacher}</div>
       <div className="category-tag">{item.category}</div>
@@ -333,6 +335,16 @@ export default function App() {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [status, setStatus] = useState(() => localStorage.getItem("planStatus") || "In progress");
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  const handleAdminLogin = () => {
+    const pin = window.prompt("Skriv inn PIN-kode for å endre status (admin):");
+    if (pin === "6292") {
+      setIsAdmin(true);
+    } else if (pin !== null) {
+      alert("Feil PIN-kode!");
+    }
+  };
   
   useEffect(() => {
     localStorage.setItem("planStatus", status);
@@ -405,10 +417,12 @@ export default function App() {
   );
 
   const handleDragStart = (event) => {
+    if (status !== 'In progress') return;
     setActiveId(event.active.id);
   };
 
   const handleDragEnd = (event) => {
+    if (status !== 'In progress') return;
     const { active, over } = event;
     setActiveId(null);
     
@@ -452,6 +466,7 @@ export default function App() {
   };
 
   const handleSlotClick = (slotId) => {
+    if (status !== 'In progress') return;
     setTargetSlot(slotId);
     setEditingItem(null);
     setIsModalOpen(true);
@@ -511,10 +526,24 @@ export default function App() {
         <div className="header-titles">
           <h1>Semesterplanlegger</h1>
           <h2>Høst 2026</h2>
-          <select className="status-dropdown" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="In progress">In progress</option>
-            <option value="Finished">Finished</option>
-          </select>
+          {isAdmin ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <select className="status-dropdown" value={status} onChange={(e) => setStatus(e.target.value)}>
+                <option value="In progress">In progress</option>
+                <option value="Finished">Finished</option>
+              </select>
+              <button onClick={() => setIsAdmin(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '1rem' }} title="Logg ut">
+                🔓
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '0.9rem' }}>
+              Status: {status}
+              <button onClick={handleAdminLogin} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }} title="Lås opp admin">
+                🔒
+              </button>
+            </div>
+          )}
         </div>
         <div className="actions">
           <button onClick={forceMigrate} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#eab308', color: '#000', border: 'none', fontWeight: 'bold' }}>
@@ -574,6 +603,7 @@ export default function App() {
                                   item={item} 
                                   onEdit={handleEdit}
                                   onDelete={handleDelete}
+                                  disabled={status !== 'In progress'}
                                 />
                               ))}
                             </DroppableSlot>
