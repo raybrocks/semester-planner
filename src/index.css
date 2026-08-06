@@ -330,15 +330,15 @@ body {
 .kompani-tag {
   display: inline-block;
   font-size: 0.55rem;
-  background-color: rgba(239, 68, 68, 0.15);
-  color: #f87171;
+  background-color: rgba(245, 158, 11, 0.15); /* amber */
+  color: #d97706; /* amber 600 */
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.15rem 0.4rem;
   border-radius: 0.25rem;
   margin-top: 0.2rem;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .edit-btn,
