@@ -397,29 +397,27 @@ body {
   padding: 2px 6px;
   border-radius: 999px;
   margin-top: 0.5rem;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: #ffffff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .kids .category-tag {
-  background: rgba(251, 207, 232, 0.2);
-  color: #fbcfe8;
+  background: rgba(236, 72, 153, 0.7);
 }
 
 .voksen .category-tag, .ungd-voksen .category-tag {
-  background: rgba(186, 230, 253, 0.4);
-  color: #0284c7;
+  background: rgba(2, 132, 199, 0.7);
 }
 
 .ungdom .category-tag {
-  background: rgba(196, 181, 253, 0.4);
-  color: #6d28d9;
+  background: rgba(109, 40, 217, 0.7);
 }
 
 .egentrening .category-tag {
-  background: rgba(167, 243, 208, 0.2);
-  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.7);
 }
 
 /* Edit Modal */
