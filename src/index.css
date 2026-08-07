@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #111111;
-  --panel-bg: #111111;
+  --bg-color: #181818;
+  --panel-bg: #181818;
   --panel-border: #222222;
   --text-primary: #ffffff;
   --text-secondary: #888888;
@@ -141,7 +141,7 @@ body {
   text-align: center;
   border-bottom: 1px solid var(--panel-border);
   border-right: 1px solid var(--panel-border);
-  background: #111111;
+  background: #181818;
   color: var(--text-secondary);
 }
 
@@ -174,7 +174,7 @@ body {
   letter-spacing: 0.1em;
   font-weight: 700;
   color: #888888;
-  background: #111111;
+  background: #181818;
   border-right: 1px solid #222222;
   display: flex;
   align-items: center;
@@ -193,7 +193,7 @@ body {
   justify-content: center;
   border-bottom: 1px solid var(--panel-border);
   border-right: 1px solid var(--panel-border);
-  background: #111111;
+  background: #181818;
   color: #a1a1aa;
   font-size: 10px;
   position: sticky;
@@ -206,7 +206,7 @@ body {
   position: sticky;
   left: 0;
   z-index: 30;
-  background: #111111;
+  background: #181818;
 }
 
 .cell-container {
@@ -525,33 +525,34 @@ body {
 }
 
 .btn-secondary {
-  background: transparent;
-  border: 1px solid var(--panel-border);
-  color: var(--text-primary);
+  background: #1a1a1a;
+  border: 1px solid #333333;
+  color: #ffffff;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.2s;
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: #2a2a2a;
 }
 
 .btn-primary {
-  background: var(--accent-color);
-  border: none;
-  color: white;
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  color: #000000;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 700;
   transition: all 0.2s;
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
+  background: #e5e5e5;
+  border-color: #e5e5e5;
 }
 
 @keyframes fadeIn {

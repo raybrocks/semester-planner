@@ -547,24 +547,25 @@ export default function App() {
           <h1>Semesterplanlegger</h1>
           <h2>Høst 2026</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-            <button 
-              onClick={isAdmin ? () => setIsAdmin(false) : handleAdminLogin}
-              style={{ 
-                background: isAdmin ? '#8b5cf6' : '#e2e8f0', 
-                color: isAdmin ? '#fff' : '#475569', 
-                border: 'none', 
-                padding: '0.4rem 0.8rem', 
-                borderRadius: '0.5rem', 
-                fontWeight: 600, 
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                fontSize: '0.85rem'
-              }}
+              <button 
+                onClick={isAdmin ? () => setIsAdmin(false) : handleAdminLogin}
+                style={{ 
+                  background: isAdmin ? '#ffffff' : '#222222', 
+                  color: isAdmin ? '#000000' : '#ffffff', 
+                  border: '1px solid #333', 
+                  padding: '0.4rem 0.8rem', 
+                  borderRadius: '0.5rem', 
+                  fontWeight: 700, 
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontSize: '0.85rem',
+                  transition: 'all 0.2s'
+                }}
               title={isAdmin ? "Logg ut av admin" : "Logg inn som admin"}
             >
-              {isAdmin ? '👑 Admin Modus' : '👤 Visningsmodus'}
+              {isAdmin ? 'Admin Modus' : 'Visningsmodus'}
             </button>
 
             {isAdmin ? (
@@ -581,11 +582,11 @@ export default function App() {
         </div>
         {isAdmin && (
           <div className="actions">
-            <button onClick={forceMigrate} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#eab308', color: '#000', border: 'none', fontWeight: 'bold' }}>
+            <button className="btn-secondary" onClick={forceMigrate} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
               <Upload size={16} /> Gjenopprett fra lokalt
             </button>
 
-            <button onClick={handleExport} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button className="btn-primary" onClick={handleExport} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
               <Download size={16} /> Eksporter
             </button>
           </div>
