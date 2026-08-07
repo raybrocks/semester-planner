@@ -486,7 +486,7 @@ export default function App() {
   };
 
   const handleSlotClick = (slotId) => {
-    if (status !== 'In progress') return;
+    if (!isAdmin || status !== 'In progress') return;
     setTargetSlot(slotId);
     setEditingItem(null);
     setIsModalOpen(true);
@@ -638,7 +638,7 @@ export default function App() {
                                   item={item} 
                                   onEdit={handleEdit}
                                   onDelete={handleDelete}
-                                  disabled={status !== 'In progress'}
+                                  disabled={!isAdmin || status !== 'In progress'}
                                 />
                               ))}
                             </DroppableSlot>
