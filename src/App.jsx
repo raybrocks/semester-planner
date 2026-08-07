@@ -559,16 +559,17 @@ export default function App() {
             )}
           </div>
         </div>
-        <div className="actions">
-          <button onClick={forceMigrate} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#eab308', color: '#000', border: 'none', fontWeight: 'bold' }}>
-            <Upload size={16} /> Gjenopprett fra lokalt
-          </button>
+        {isAdmin && (
+          <div className="actions">
+            <button onClick={forceMigrate} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#eab308', color: '#000', border: 'none', fontWeight: 'bold' }}>
+              <Upload size={16} /> Gjenopprett fra lokalt
+            </button>
 
-
-          <button onClick={handleExport} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Download size={16} /> Eksporter
-          </button>
-        </div>
+            <button onClick={handleExport} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Download size={16} /> Eksporter
+            </button>
+          </div>
+        )}
       </header>
 
       <DndContext 
