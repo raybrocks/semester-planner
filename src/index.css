@@ -1,21 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #0f172a;
-  --panel-bg: rgba(30, 41, 59, 0.7);
-  --panel-border: rgba(255, 255, 255, 0.1);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --bg-color: #111111;
+  --panel-bg: #111111;
+  --panel-border: #222222;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
   --accent-color: #3b82f6;
   --accent-hover: #2563eb;
-  --card-kids: rgba(251, 207, 232, 0.3);
-  --card-kids-border: rgba(251, 207, 232, 0.6);
-  --card-ungdom: rgba(196, 181, 253, 0.3);
-  --card-ungdom-border: rgba(196, 181, 253, 0.6);
-  --card-voksen: rgba(186, 230, 253, 0.3);
-  --card-voksen-border: rgba(186, 230, 253, 0.6);
-  --card-egentrening: rgba(167, 243, 208, 0.3);
-  --card-egentrening-border: rgba(167, 243, 208, 0.6);
 }
 
 * {
@@ -30,10 +22,6 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   padding: 2rem;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
-  background-attachment: fixed;
 }
 
 /* Scrollbar */
@@ -139,7 +127,6 @@ body {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
   background: var(--panel-bg);
-  backdrop-filter: blur(12px);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
@@ -154,7 +141,7 @@ body {
   text-align: center;
   border-bottom: 1px solid var(--panel-border);
   border-right: 1px solid var(--panel-border);
-  background: rgba(15, 23, 42, 0.4);
+  background: #111111;
   color: var(--text-secondary);
 }
 
@@ -166,6 +153,11 @@ body {
 .day-name {
   padding: 1rem;
   border-bottom: 1px solid var(--panel-border);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .room-headers {
@@ -176,13 +168,14 @@ body {
 
 .room-header-label {
   flex: 1;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   padding: 4px 8px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  background: rgba(15, 23, 42, 0.3);
-  border-right: 1px dashed rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #888888;
+  background: #111111;
+  border-right: 1px solid #222222;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -194,15 +187,15 @@ body {
 
 .matrix-time-cell {
   padding: 1rem;
-  font-weight: 500;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid var(--panel-border);
   border-right: 1px solid var(--panel-border);
-  background: #1e293b;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
+  background: #111111;
+  color: #a1a1aa;
+  font-size: 10px;
   position: sticky;
   left: 0;
   z-index: 20;
@@ -213,7 +206,7 @@ body {
   position: sticky;
   left: 0;
   z-index: 30;
-  background: #1e293b;
+  background: #111111;
 }
 
 .cell-container {
@@ -230,7 +223,7 @@ body {
   width: 50%;
   display: flex;
   flex-direction: column;
-  border-right: 1px dashed rgba(255, 255, 255, 0.1);
+  border-right: 1px solid #222222;
   border-bottom: none;
 }
 
@@ -276,24 +269,18 @@ body {
   overflow: hidden;
 }
 
-.class-card.kids {
-  background: var(--card-kids);
-  border-color: var(--card-kids-border);
+/* Variant A (Hvit) */
+.class-card.kids, .class-card.voksen {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
 }
 
-.class-card.voksen, .class-card.ungd-voksen {
-  background: var(--card-voksen);
-  border-color: var(--card-voksen-border);
-}
-
-.class-card.ungdom {
-  background: var(--card-ungdom);
-  border-color: var(--card-ungdom-border);
-}
-
-.class-card.egentrening {
-  background: var(--card-egentrening);
-  border-color: var(--card-egentrening-border);
+/* Variant B (Svart) */
+.class-card.ungd-voksen, .class-card.ungdom, .class-card.egentrening {
+  background: #000000;
+  color: #ffffff;
+  border-color: #222222;
 }
 
 .class-card:active {
@@ -310,19 +297,23 @@ body {
 }
 
 .class-name {
-  font-weight: 800;
+  font-weight: 700;
   font-size: 0.8rem;
-  color: #ffffff;
   word-break: break-word;
   text-transform: uppercase;
   margin-bottom: 0.1rem;
-  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+.class-card.kids .class-name, .class-card.voksen .class-name {
+  color: #000000;
+}
+.class-card.ungd-voksen .class-name, .class-card.ungdom .class-name, .class-card.egentrening .class-name {
+  color: #ffffff;
 }
 
 .level-tag {
   display: block;
   font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -330,28 +321,35 @@ body {
 
 .kompani-tag {
   display: inline-block;
-  font-size: 0.55rem;
-  background-color: rgba(245, 158, 11, 0.15); /* amber */
-  color: #d97706; /* amber 600 */
+  font-size: 10px;
   font-weight: 700;
+  border-radius: 999px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.15rem 0.4rem;
-  border-radius: 0.25rem;
+  letter-spacing: 0.15em;
+  padding: 2px 6px;
   margin-top: 0.2rem;
-  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .edit-btn,
 .delete-btn {
   background: none;
   border: none;
-  color: var(--text-secondary);
   cursor: pointer;
   padding: 2px;
   border-radius: 4px;
   opacity: 0;
   transition: opacity 0.2s;
+}
+
+.class-card.kids .edit-btn, .class-card.kids .delete-btn,
+.class-card.voksen .edit-btn, .class-card.voksen .delete-btn {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.class-card.ungd-voksen .edit-btn, .class-card.ungd-voksen .delete-btn,
+.class-card.ungdom .edit-btn, .class-card.ungdom .delete-btn,
+.class-card.egentrening .edit-btn, .class-card.egentrening .delete-btn {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .card-actions {
@@ -368,8 +366,7 @@ body {
 }
 
 .edit-btn:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(128, 128, 128, 0.2);
 }
 
 .delete-btn:hover {
@@ -379,7 +376,6 @@ body {
 
 .teacher-name {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.95);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -387,33 +383,41 @@ body {
   gap: 0.25rem;
   text-transform: uppercase;
 }
+.class-card.kids .teacher-name, .class-card.kids .level-tag,
+.class-card.voksen .teacher-name, .class-card.voksen .level-tag {
+  color: rgba(0, 0, 0, 0.5);
+}
+.class-card.ungd-voksen .teacher-name, .class-card.ungd-voksen .level-tag,
+.class-card.ungdom .teacher-name, .class-card.ungdom .level-tag,
+.class-card.egentrening .teacher-name, .class-card.egentrening .level-tag {
+  color: rgba(255, 255, 255, 0.4);
+}
 
 .category-tag {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 10px;
   padding: 2px 6px;
   border-radius: 999px;
   margin-top: 0.5rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.15em;
+}
+
+/* Inverterte pills */
+.class-card.kids .category-tag, .class-card.kids .kompani-tag,
+.class-card.voksen .category-tag, .class-card.voksen .kompani-tag {
+  background-color: #000000;
   color: #ffffff;
+  border: none;
 }
 
-.kids .category-tag {
-  background: rgba(236, 72, 153, 0.7);
-}
-
-.voksen .category-tag, .ungd-voksen .category-tag {
-  background: rgba(2, 132, 199, 0.7);
-}
-
-.ungdom .category-tag {
-  background: rgba(109, 40, 217, 0.7);
-}
-
-.egentrening .category-tag {
-  background: rgba(16, 185, 129, 0.7);
+.class-card.ungd-voksen .category-tag, .class-card.ungd-voksen .kompani-tag,
+.class-card.ungdom .category-tag, .class-card.ungdom .kompani-tag,
+.class-card.egentrening .category-tag, .class-card.egentrening .kompani-tag {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
 }
 
 /* Edit Modal */
