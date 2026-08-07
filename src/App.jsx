@@ -351,6 +351,25 @@ export default function App() {
     localStorage.setItem("planStatus", status);
   }, [status]);
 
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, "settings", "general"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.status) {
+          setStatus(data.status);
+          localStorage.setItem("planStatus", data.status);
+        }
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  const handleStatusChange = (newStatus) => {
+    setStatus(newStatus);
+    setDoc(doc(db, "settings", "general"), { status: newStatus }, { merge: true })
+      .catch(e => console.error("Could not save status to DB", e));
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [targetSlot, setTargetSlot] = useState(null);
@@ -549,7 +568,7 @@ export default function App() {
             </button>
 
             {isAdmin ? (
-              <select className="status-dropdown" value={status} onChange={(e) => setStatus(e.target.value)} style={{ margin: 0 }}>
+              <select className="status-dropdown" value={status} onChange={(e) => handleStatusChange(e.target.value)} style={{ margin: 0 }}>
                 <option value="In progress">In progress</option>
                 <option value="Finished">Finished</option>
               </select>
