@@ -420,6 +420,30 @@ body {
   border: none;
 }
 
+/* Short Class Overrides (<= 30 min) */
+.class-card.short-class {
+  padding: 0.1rem;
+}
+.class-card.short-class .card-header {
+  margin-bottom: 0.1rem;
+}
+.class-card.short-class .class-name {
+  font-size: 0.65rem;
+  line-height: 1.1;
+}
+.class-card.short-class .teacher-name {
+  font-size: 0.55rem;
+}
+.class-card.short-class .level-tag {
+  font-size: 0.5rem;
+}
+.class-card.short-class .category-tag,
+.class-card.short-class .kompani-tag {
+  font-size: 7px;
+  padding: 1px 4px;
+  margin-top: 0.1rem;
+}
+
 /* Edit Modal */
 .modal-overlay {
   position: fixed;

@@ -68,12 +68,13 @@ function DraggableCard({ item, onEdit, onDelete, disabled }) {
   };
 
   const categoryClass = (item.category || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const isShort = durationNum <= 30;
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`class-card ${categoryClass} ${isDragging ? 'is-dragging' : ''}`}
+      className={`class-card ${categoryClass} ${isDragging ? 'is-dragging' : ''} ${isShort ? 'short-class' : ''}`}
       {...attributes}
       {...listeners}
     >
