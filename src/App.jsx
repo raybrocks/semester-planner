@@ -544,7 +544,7 @@ export default function App() {
     <div className="app-container">
       <header className="header">
         <div className="header-titles">
-          <h1>Semesterplanlegger</h1>
+          <h1>Timeplan</h1>
           <h2>Høst 2026</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
               <button 
