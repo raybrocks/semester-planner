@@ -62,8 +62,8 @@ function DraggableCard({ item, onEdit, onDelete, disabled }) {
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    height: `${heightPixels}px`,
-    top: `${topPixels}px`,
+    height: `${heightPixels - 4}px`,
+    top: `${topPixels + 2}px`,
     zIndex: isDragging ? 100 : 10
   };
 
