@@ -385,12 +385,12 @@ body {
 }
 .class-card.kids .teacher-name, .class-card.kids .level-tag,
 .class-card.voksen .teacher-name, .class-card.voksen .level-tag {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.85);
 }
 .class-card.ungd-voksen .teacher-name, .class-card.ungd-voksen .level-tag,
 .class-card.ungdom .teacher-name, .class-card.ungdom .level-tag,
 .class-card.egentrening .teacher-name, .class-card.egentrening .level-tag {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .category-tag {
